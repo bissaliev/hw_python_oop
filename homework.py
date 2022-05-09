@@ -37,7 +37,6 @@ class Training:
         self.duration = duration
         self.weight = weight
 
-
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
         return self.action * self.LEN_STEP / self.M_IN_KM
@@ -69,9 +68,9 @@ class Running(Training):
         coeff_calorie_2: int = 20
 
         return ((coeff_calorie_1 * self.get_mean_speed()
-                 - coeff_calorie_2)
-                 * self.weight / self.M_IN_KM
-                 * self.duration * self.H_IN_M)
+                - coeff_calorie_2)
+                * self.weight / self.M_IN_KM
+                * self.duration * self.H_IN_M)
 
 
 class SportsWalking(Training):
@@ -84,13 +83,13 @@ class SportsWalking(Training):
                  ) -> None:
         super().__init__(action, duration, weight)
         self.height = height
-    
+
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
         return ((0.035 * self.weight + (self.get_mean_speed() ** 2 
-                 // self.height)
-                 * 0.029 * self.weight)
-                 * self.duration * self.H_IN_M)
+                // self.height)
+                * 0.029 * self.weight)
+                * self.duration * self.H_IN_M)
 
 
 class Swimming(Training):
@@ -112,13 +111,14 @@ class Swimming(Training):
     def get_mean_speed(self) -> float:
         """Получить среднюю скорость движения."""
         return (self.length_pool
-               * self.count_pool
-               / self.M_IN_KM
-               / self.duration)
+                * self.count_pool
+                / self.M_IN_KM
+                / self.duration)
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
         return (self.get_mean_speed() + 1.1) * 2 * self.weight
+
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
@@ -130,6 +130,7 @@ def read_package(workout_type: str, data: list) -> Training:
 
     training = dict_train.get(workout_type)(*data)
     return training
+
 
 def main(training: Training) -> None:
     """Главная функция."""
