@@ -38,7 +38,7 @@ class Training:
         self.weight = weight
 
 
-    def get_distance(self): -> float:
+    def get_distance(self) -> float:
         """Получить дистанцию в км."""
         return self.action * self.LEN_STEP / self.M_IN_KM
 
