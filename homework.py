@@ -25,7 +25,7 @@ class Training:
     """Базовый класс тренировки."""
     M_IN_KM: int = 1000
     LEN_STEP: float = 0.65
-    H_IN_M: int = 60
+    HOUR_IN_MINUTE: int = 60
 
     def __init__(
         self,
@@ -34,7 +34,7 @@ class Training:
         weight: float,
     ) -> None:
         self.action: int = action
-        self.hour: float = duration
+        self.duration_h: float = duration
         self.weight: float = weight
 
     def get_distance(self) -> float:
@@ -43,7 +43,7 @@ class Training:
 
     def get_mean_speed(self) -> float:
         """Получить среднюю скорость движения."""
-        return self.get_distance() / self.hour
+        return self.get_distance() / self.duration_h
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
@@ -54,8 +54,8 @@ class Training:
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
         return InfoMessage(
-            self.__class__.__name__,
-            self.hour,
+            type(self).__name__,
+            self.duration_h,
             self.get_distance(),
             self.get_mean_speed(),
             self.get_spent_calories()
@@ -64,19 +64,25 @@ class Training:
 
 class Running(Training):
     """Тренировка: бег."""
+    COEFF_CALORIE_1: int = 18
+    COEFF_CALORIE_2: int = 20
+
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        COEFF_CALORIE_1: int = 18
-        COEFF_CALORIE_2: int = 20
         return (
-            (COEFF_CALORIE_1 * self.get_mean_speed() - COEFF_CALORIE_2)
+            (self.COEFF_CALORIE_1 * self.get_mean_speed()
+             - self.COEFF_CALORIE_2)
             * self.weight / self.M_IN_KM
-            * self.hour * self.H_IN_M
+            * self.duration_h * self.HOUR_IN_MINUTE
         )
 
 
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
+    COEFF_1: float = 0.035
+    COEFF_2: float = 0.029
+    COEFF_3: float = 2
+
     def __init__(
         self,
         action: int,
@@ -89,13 +95,10 @@ class SportsWalking(Training):
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        COEFF_1: float = 0.035
-        COEFF_2: float = 0.029
-        return (
-            (COEFF_1 * self.weight + (self.get_mean_speed() ** 2
-             // self.height) * COEFF_2 * self.weight)
-            * self.hour * self.H_IN_M
-        )
+        formula_1 = self.get_mean_speed() ** self.COEFF_3 // self.height
+        formula_2 = self.COEFF_1 * self.weight
+        + formula_1 * self.COEFF_2 * self.weight
+        return formula_2 * self.duration_h * self.HOUR_IN_MINUTE
 
 
 class Swimming(Training):
@@ -117,31 +120,29 @@ class Swimming(Training):
     def get_mean_speed(self) -> float:
         """Получить среднюю скорость движения."""
         return (
-            self.length_pool
-            * self.count_pool
-            / self.M_IN_KM
-            / self.hour
+            self.length_pool * self.count_pool
+            / self.M_IN_KM / self.duration_h
         )
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        return (self.get_mean_speed() + 1.1) * 2 * self.weight
+        COEFF_SW_1: float = 1.1
+        COEFF_SW_2: float = 2
+        return (self.get_mean_speed() + COEFF_SW_1) * COEFF_SW_2 * self.weight
 
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    train: dict = {
+    train: dict[str, type[Training]] = {
         'SWM': Swimming,
         'RUN': Running,
         'WLK': SportsWalking
     }
     if workout_type in train:
-        training = train.get(workout_type)(*data)
-        return training
-    else:
-        raise KeyError(
-            f'Тренировка с данным ключом "{workout_type}" не найденна.'
-        )
+        return train.get(workout_type)(*data)
+    raise KeyError(
+        f'Тренировка с данным ключом "{workout_type}" не найденна.'
+    )
 
 
 def main(training: Training) -> None:
