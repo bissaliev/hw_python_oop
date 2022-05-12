@@ -96,8 +96,10 @@ class SportsWalking(Training):
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
         formula_1 = self.get_mean_speed() ** self.COEFF_3 // self.height
-        formula_2 = self.COEFF_1 * self.weight
-        + formula_1 * self.COEFF_2 * self.weight
+        formula_2 = (
+            self.COEFF_1 * self.weight + formula_1
+            * self.COEFF_2 * self.weight
+        )
         return formula_2 * self.duration_h * self.HOUR_IN_MINUTE
 
 
@@ -140,7 +142,7 @@ def read_package(workout_type: str, data: list) -> Training:
     }
     if workout_type in train:
         return train.get(workout_type)(*data)
-    raise KeyError(
+    raise ValueError(
         f'Тренировка с данным ключом "{workout_type}" не найденна.'
     )
 
