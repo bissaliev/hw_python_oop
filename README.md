@@ -8,7 +8,7 @@ Python 3.7
 ##Инструкция по установке
 Клонируй репозиторий и перейди в него в командной строке:
 '''
-git clone https://github.com/sergeypatrakov/hw_python_oop
+git clone https://github.com/bissaliev/hw_python_oop
 '''
 
 cd hw_python_oop
