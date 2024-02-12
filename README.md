@@ -10,28 +10,28 @@ Python 3.7
 ```bash
 git clone https://github.com/bissaliev/hw_python_oop
 ```
-
+```bash
 cd hw_python_oop
+```
 
 Cоздай и активируй виртуальное окружение:
-
+```bash
 python3 -m venv venv
+```
 
-Если у тебя Linux/macOS
-
+```bash
 source venv/bin/activate
-
-Если у тебя windows
-
-source env/scripts/activate python3 -m pip install --upgrade pip
+```
 
 Установи зависимости из файла requirements.txt:
-
+```bash
 pip install -r requirements.txt
+```
 
 Запусти проект:
-
+```bash
 python3 manage.py runserver
+```
 
 ## Автор
-[Биссалиев Олег](https://github.com/bissaliev)
+[Биссалиев Олег](https://github.com/bissaliev?tab=repositories)
